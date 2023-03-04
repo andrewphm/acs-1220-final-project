@@ -7,10 +7,11 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
-
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     posts_made = db.relationship('Post', backref='author', lazy=True, foreign_keys='Post.author_id')
     posts_received = db.relationship('Post', back_populates='recipient', lazy=True, foreign_keys='Post.recipient_id')
+    user_interests = db.relationship('UserInterest', backref='user', lazy=True)
+
 
 
 class Post(db.Model):
@@ -31,9 +32,16 @@ class Interest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), unique=True, nullable=False)
 
+    # Define a many-to-many relationship between Interest and UserInterest
+    user_interests = db.relationship('UserInterest', backref='interest', lazy=True)
 
     def __repr__(self):
         return f"Interest('{self.name}', '{self.description}')"
+
+class UserInterest(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    interest_id = db.Column(db.Integer, db.ForeignKey('interest.id'), nullable=False)
 
 class Follow(db.Model):
     follower_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
@@ -41,6 +49,8 @@ class Follow(db.Model):
 
     def __repr__(self):
         return f"Follow('{self.follower_id}', '{self.followed_id}')"
+
+
 
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
