@@ -1,14 +1,19 @@
-from flaskbook_app import bcrypt
+# from flaskbook_app import bcrypt
 from flaskbook_app.models import User
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Length, ValidationError
 
 class SignUpForm(FlaskForm):
-    username = StringField('User Name',
+    first_name = StringField('First name', validators=[DataRequired(),Length(min=3, max=50)])
+    last_name = StringField('Last name', validators=[DataRequired(), Length(min=1, max=50)])
+    username = StringField('Username',
         validators=[DataRequired(), Length(min=3, max=50)])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Sign Up')
+
+    def __str__(self):
+        return  str(self.__class__) + '\n'+ '\n'.join(('{} = {}'.format(item, self.__dict__[item]) for item in self.__dict__))
 
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
