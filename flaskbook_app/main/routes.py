@@ -1,8 +1,6 @@
-from flaskbook_app.extensions import db
 from flask import Blueprint, request, render_template, redirect, url_for, flash
 
 main = Blueprint("main", __name__)
-
 
 @main.route("/")
 def index():
