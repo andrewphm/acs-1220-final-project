@@ -18,14 +18,21 @@ def signup():
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
 
-
-        user = User(
-            username=form.username.data,
-            password=hashed_password,
-            first_name=form.first_name.data,
-            last_name=form.last_name.data,
-            avatar=form.avatar.data
-        )
+        if form.avatar.data:
+            user = User(
+                username=form.username.data,
+                password=hashed_password,
+                first_name=form.first_name.data,
+                last_name=form.last_name.data,
+                avatar=form.avatar.data
+            )
+        else:
+            user = User(
+                username=form.username.data,
+                password=hashed_password,
+                first_name=form.first_name.data,
+                last_name=form.last_name.data
+            )
 
         if user:
             db.session.add(user)
