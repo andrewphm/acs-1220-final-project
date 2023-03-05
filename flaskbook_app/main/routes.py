@@ -24,7 +24,7 @@ def user_profile(username):
     user = User.query.filter_by(username=username).first_or_404()
 
     interests = []
-    print(user.user_interests)
+
     for interest in user.user_interests:
         interests.append(interest.interest.name)
 
@@ -34,6 +34,7 @@ def user_profile(username):
 @main.route('/follow/<user_id>', methods=['POST'])
 @login_required
 def follow(user_id):
+    print('firing')
     user_to_follow = User.query.get(user_id)
     if user_to_follow is None:
         flash('User not found.', category='danger')
@@ -44,6 +45,22 @@ def follow(user_id):
     current_user.follow(user_to_follow)
     db.session.commit()
     flash(f'You are now following {user_to_follow.first_name}', category='success')
+    return redirect(url_for('main.user_profile', username=user_to_follow.username))
+
+@main.route('/unfollow/<user_id>', methods=['POST'])
+@login_required
+def unfollow(user_id):
+    user_to_unfollow = User.query.get(user_id)
+    if user_to_unfollow is None:
+        flash('User not found.', category='danger')
+        return redirect(url_for('main.index'))
+    if not current_user.is_following(user_to_unfollow):
+        flash('You are not following this user.', category='danger')
+        return redirect(url_for('main.user_profile', username=user_to_unfollow.username))
+    current_user.unfollow(user_to_unfollow)
+    db.session.commit()
+    flash(f'You are no longer following {user_to_unfollow.first_name}', category='success')
+    return redirect(url_for('main.user_profile', username=user_to_unfollow.username))
 
 @main.route("/<username>/profile/edit")
 def edit_profile(username):

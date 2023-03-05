@@ -25,13 +25,13 @@ class User(UserMixin, db.Model):
         'Follow',
         foreign_keys=[Follow.follower_id],
         backref='follower',
-        lazy=True,
+        lazy='dynamic',
     )
     followers = db.relationship(
         'Follow',
         foreign_keys=[Follow.followed_id],
         backref='followed',
-        lazy=True,
+        lazy='dynamic',
     )
 
     def follow(self, user):

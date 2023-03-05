@@ -27,6 +27,17 @@
     <h2>Wall</h2>
     <h2>{{ user.first_name }} {{ user.last_name }}</h2>
 
+    {% if current_user.username != user.username %} {% if current_user.is_following(user) %}
+    <form action="{{ url_for('main.unfollow', user_id=user.id) }}" method="POST">
+      <button type="submit" class="btn btn-primary">Unfollow</button>
+    </form>
+    {% else %}
+
+    <form action="{{ url_for('main.follow', user_id=user.id) }}" method="POST">
+      <button type="submit" class="btn btn-primary">Follow</button>
+    </form>
+    {% endif %} {% endif %}
+
     <form method="post" enctype="multipart/form-data">
       {{ form.hidden_tag() }}
       <div class="form-group">{{ form.content(class="w-full h-[100px]") }}</div>
