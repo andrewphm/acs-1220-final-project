@@ -66,8 +66,21 @@
                 {% endif %}
               </div>
               <div class="form-group">
+                {{ form.avatar.label(class="form-label") }}
+                {{ form.avatar(class="form-control") }}
+              </div>
+              <div class="form-group">
                 {{ form.password.label(class="form-label") }}
                 {{ form.password(class="form-control") }}
+              </div>
+              <div class="form-group">
+                {{ form.interests.label(class="form-control-label") }}
+                {% for option in form.interests %}
+                  <div class="form-check">
+                    {{ option(class_="form-check-input") }}
+                    {{ option.label(class_="form-check-label") }}
+                  </div>
+                {% endfor %}
               </div>
               <div class="form-group">
                 {{ form.submit(class="btn btn-primary") }}

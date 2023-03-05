@@ -1,0 +1,42 @@
+{% extends 'base.html' %} {% block content %}
+
+<section class="h-64 w-60">
+  <h1>Edit Profile</h1>
+
+  <form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+      {{ form.first_name.label(class="form-label") }} {{ form.first_name(class="form-control") }}
+    </div>
+    <div class="form-group">
+      {{ form.last_name.label(class="form-label") }} {{ form.last_name(class="form-control") }}
+    </div>
+    <div class="form-group">
+      {{ form.username.label(class="form-label") }} {{ form.username(class="form-control") }} {% if
+      form.username.errors %}
+      <div class="invalid-feedback">
+        {% for error in form.username.errors %}
+        <span>{{ error }}</span>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    <div class="form-group">
+      {{ form.avatar.label(class="form-label") }} {{ form.avatar(class="form-control") }}
+    </div>
+    <div class="form-group">
+      {{ form.password.label(class="form-label") }} {{ form.password(class="form-control") }}
+    </div>
+    <div class="form-group">
+      {{ form.interests.label(class="form-control-label") }} {% for option in form.interests %}
+      <div class="form-check">
+        {{ option(class_="form-check-input", checked=option.data in default_interests) }} {{
+        option.label(class_="form-check-label") }}
+      </div>
+      {% endfor %} {{ form.interests.errors }}
+    </div>
+    <div class="form-group">{{ form.submit(class="btn btn-primary") }}</div>
+  </form>
+</section>
+
+{% endblock %}

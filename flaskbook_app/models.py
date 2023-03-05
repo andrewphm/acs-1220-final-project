@@ -10,9 +10,10 @@ class User(UserMixin, db.Model):
     first_name = db.Column(db.String(40), nullable=False)
     last_name = db.Column(db.String(40), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    user_interests = db.relationship('UserInterest', backref='user', lazy=True)
+    avatar = db.Column(db.String(255))
     # posts_made = db.relationship('Post', backref='author', lazy=True, foreign_keys='Post.author_id')
     # posts_received = db.relationship('Post', back_populates='recipient', lazy=True, foreign_keys='Post.recipient_id')
-    user_interests = db.relationship('UserInterest', backref='user', lazy=True)
 
 
 
@@ -21,7 +22,7 @@ class Post(db.Model):
     content = db.Column(db.String(255), nullable=False)
     photo = db.Column(db.String(255))
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-    # author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     # recipient_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     # author = db.relationship('User', back_populates='posts_made', foreign_keys=[author_id])
     # recipient = db.relationship('User', back_populates='posts_received', foreign_keys=[recipient_id])
@@ -38,7 +39,7 @@ class Interest(db.Model):
     user_interests = db.relationship('UserInterest', backref='interest', lazy=True)
 
     def __repr__(self):
-        return f"Interest('{self.name}', '{self.description}')"
+        return f"Interest('{self.name}')"
 
 class UserInterest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
