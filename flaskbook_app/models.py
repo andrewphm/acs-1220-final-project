@@ -3,6 +3,15 @@ from flask_login import UserMixin
 from .extensions import db
 from datetime import datetime
 
+
+class Follow(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    follower_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    followed_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    def __repr__(self):
+        return f"Follow('{self.follower_id}', '{self.followed_id}')"
+
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
@@ -12,6 +21,34 @@ class User(UserMixin, db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     user_interests = db.relationship('UserInterest', backref='user', lazy=True)
     avatar = db.Column(db.String(255))
+    followed = db.relationship(
+        'Follow',
+        foreign_keys=[Follow.follower_id],
+        backref='follower',
+        lazy=True,
+    )
+    followers = db.relationship(
+        'Follow',
+        foreign_keys=[Follow.followed_id],
+        backref='followed',
+        lazy=True,
+    )
+
+    def follow(self, user):
+        if not self.is_following(user):
+            follow = Follow(follower=self, followed=user)
+            db.session.add(follow)
+
+    def unfollow(self, user):
+        follow = self.followed.filter_by(followed_id=user.id).first()
+        if follow:
+            db.session.delete(follow)
+
+    def is_following(self, user):
+        return self.followed.filter_by(followed_id=user.id).first() is not None
+
+    def is_followed_by(self, user):
+        return self.followers.filter_by(follower_id=user.id).first() is not None
 
 
 class Post(db.Model):
@@ -43,20 +80,15 @@ class UserInterest(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     interest_id = db.Column(db.Integer, db.ForeignKey('interest.id'), nullable=False)
 
-class Follow(db.Model):
-    follower_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
-    followed_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
-
-    def __repr__(self):
-        return f"Follow('{self.follower_id}', '{self.followed_id}')"
 
 
-class Comment(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    body = db.Column(db.String(140))
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
 
-    def __repr__(self):
-        return f"Comment('{self.body}', '{self.timestamp}')"
+# class Comment(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     body = db.Column(db.String(140))
+#     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+#     post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
+
+#     def __repr__(self):
+#         return f"Comment('{self.body}', '{self.timestamp}')"

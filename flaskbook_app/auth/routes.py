@@ -1,4 +1,4 @@
-from flaskbook_app.models import User, UserInterest, Interest
+from flaskbook_app.models import User, UserInterest, Interest, Post
 from flask import Blueprint, request, render_template, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
 from flaskbook_app.auth.forms import SignUpForm, LoginForm
@@ -12,6 +12,8 @@ interests = ['Music','Movies', 'Books', 'Sports',
 
 @auth.route('/signup', methods=['GET', 'POST'])
 def signup():
+
+
     form = SignUpForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
@@ -44,6 +46,13 @@ def signup():
 def login():
     form = LoginForm()
 
+    # for interest in interests:
+    #     new_interest = Interest(name=interest)
+    #     db.session.add(new_interest)
+    # db.session.commit()
+
+    # posts = Post.query.filter_by(receiver_id=1).all()
+    # print(posts)
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         login_user(user, remember=True)

@@ -1,7 +1,6 @@
 from flask import Blueprint, request, render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
-from flaskbook_app.models import User, Post, Interest, UserInterest, Follow, Comment
-from flaskbook_app.extensions import db
+from flaskbook_app.models import User, Post, Interest, UserInterest, Follow
 from flaskbook_app.auth.forms import SignUpForm
 from flaskbook_app.extensions import db, app, bcrypt
 from flaskbook_app.main.forms import PostForm
@@ -11,6 +10,10 @@ main = Blueprint("main", __name__)
 @main.route("/")
 @login_required
 def index():
+    # Post.__table__.drop(db.engine)
+    # UserInterest.__table__.drop(db.engine)
+    # Follow.__table__.drop(db.engine)
+    print("finished dropping table")
     return render_template("home.html")
 
 
@@ -19,15 +22,28 @@ def index():
 def user_profile(username):
     form = PostForm()
     user = User.query.filter_by(username=username).first_or_404()
-    # posts = Post.query.filter_by(user_id=user.id).all()
-    interests = []
 
-    print(user.avatar)
+    interests = []
+    print(user.user_interests)
     for interest in user.user_interests:
         interests.append(interest.interest.name)
 
     return render_template("profile.html", user=user, current_user=current_user, interests=interests, form=form)
 
+
+@main.route('/follow/<user_id>', methods=['POST'])
+@login_required
+def follow(user_id):
+    user_to_follow = User.query.get(user_id)
+    if user_to_follow is None:
+        flash('User not found.', category='danger')
+        return redirect(url_for('main.index'))
+    if current_user.is_following(user_to_follow):
+        flash('You are already following this user.', category='danger')
+        return redirect(url_for('main.user_profile', username=user_to_follow.username))
+    current_user.follow(user_to_follow)
+    db.session.commit()
+    flash(f'You are now following {user_to_follow.first_name}', category='success')
 
 @main.route("/<username>/profile/edit")
 def edit_profile(username):
