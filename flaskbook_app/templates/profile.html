@@ -3,7 +3,15 @@
 <section class="h-full w-full bg-neutral-200 flex">
   <section>
     <div class="w-[350px] border border-blue-700">
+      {% if user.avatar %}
       <img src="{{ user.avatar }}" class="object-cover" alt="" />
+      {% else %}
+      <img
+        src="https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
+        class="object-cover"
+        alt="Default Avatar"
+      />
+      {% endif %}
     </div>
 
     <div class="w-[350px] border border-blue-700">
@@ -15,8 +23,16 @@
       </ul>
     </div>
   </section>
-  <section>
+  <section class="w-full">
     <h2>Wall</h2>
+    <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+
+    <form method="post" enctype="multipart/form-data">
+      {{ form.hidden_tag() }}
+      <div class="form-group">{{ form.content(class="w-full h-[100px]") }}</div>
+      <div class="form-group">{{ form.image(class="form-control") }}</div>
+      {{ form.submit(class="btn btn-primary") }}
+    </form>
   </section>
 </section>
 

@@ -16,6 +16,7 @@ def signup():
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
 
+
         user = User(
             username=form.username.data,
             password=hashed_password,
@@ -32,8 +33,6 @@ def signup():
                 user_interest = UserInterest(user_id=user.id, interest_id=interest_id)
                 db.session.add(user_interest)
             db.session.commit()
-
-            print(user)
 
             flash('Account Created!', category='success')
         else:

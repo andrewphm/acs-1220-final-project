@@ -12,20 +12,17 @@ class User(UserMixin, db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     user_interests = db.relationship('UserInterest', backref='user', lazy=True)
     avatar = db.Column(db.String(255))
-    # posts_made = db.relationship('Post', backref='author', lazy=True, foreign_keys='Post.author_id')
-    # posts_received = db.relationship('Post', back_populates='recipient', lazy=True, foreign_keys='Post.recipient_id')
-
 
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.String(255), nullable=False)
+    content = db.Column(db.String(1000), nullable=False)
     photo = db.Column(db.String(255))
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    # recipient_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    # author = db.relationship('User', back_populates='posts_made', foreign_keys=[author_id])
-    # recipient = db.relationship('User', back_populates='posts_received', foreign_keys=[recipient_id])
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    receiver_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    author = db.relationship('User', backref='posts', lazy=True, foreign_keys=[author_id])
+    receiver = db.relationship('User', backref='receieved_posts', lazy=True, foreign_keys=[receiver_id])
 
     def __repr__(self):
         return f"Post('{self.content}', '{self.created_at}')"
@@ -52,7 +49,6 @@ class Follow(db.Model):
 
     def __repr__(self):
         return f"Follow('{self.follower_id}', '{self.followed_id}')"
-
 
 
 class Comment(db.Model):

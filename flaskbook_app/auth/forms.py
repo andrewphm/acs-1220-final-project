@@ -1,17 +1,16 @@
 # from flaskbook_app import bcrypt
-from flaskbook_app.models import User
+from flaskbook_app.models import User, Interest
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, SelectMultipleField, widgets
 from wtforms.validators import DataRequired, Length, ValidationError
 from flaskbook_app.extensions import db, bcrypt
-from flaskbook_app.models import Interest
 
 class SignUpForm(FlaskForm):
     first_name = StringField('First name', validators=[DataRequired(),Length(min=3, max=50)])
     last_name = StringField('Last name', validators=[DataRequired(), Length(min=1, max=50)])
     username = StringField('Username',
         validators=[DataRequired(), Length(min=3, max=50)])
-    avatar = StringField('Avatar', validators=[DataRequired(), Length(min=3, max=100)])
+    avatar = StringField('Avatar')
     password = PasswordField('Password', validators=[DataRequired()])
     interests = SelectMultipleField('Interests', choices=[(interest.id, interest.name) for interest in Interest.query.all()], widget=widgets.ListWidget(prefix_label=False), option_widget=widgets.CheckboxInput(), coerce=int)
     submit = SubmitField('Sign Up')
