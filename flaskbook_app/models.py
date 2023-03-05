@@ -20,7 +20,7 @@ class User(UserMixin, db.Model):
     last_name = db.Column(db.String(40), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     user_interests = db.relationship('UserInterest', backref='user', lazy=True)
-    avatar = db.Column(db.String(255))
+    avatar = db.Column(db.String(255), default='https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg')
     followed = db.relationship(
         'Follow',
         foreign_keys=[Follow.follower_id],

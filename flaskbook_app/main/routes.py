@@ -10,11 +10,17 @@ main = Blueprint("main", __name__)
 @main.route("/")
 @login_required
 def index():
-    # Post.__table__.drop(db.engine)
-    # UserInterest.__table__.drop(db.engine)
-    # Follow.__table__.drop(db.engine)
-    print("finished dropping table")
-    return render_template("home.html")
+    user = User.query.filter_by(username=current_user.username).first_or_404()
+    followed_users = user.followed.all()
+    posts = Post.query \
+    .join(Follow, Follow.followed_id == Post.author_id) \
+    .filter(Follow.follower_id == user.id) \
+    .filter(Post.receiver_id == Post.author_id) \
+    .order_by(Post.created_at.desc()) \
+    .all()
+
+    print(posts)
+    return render_template("home.html", posts=posts, current_user=current_user)
 
 
 @main.route("/<username>/")
@@ -22,13 +28,13 @@ def index():
 def user_profile(username):
     form = PostForm()
     user = User.query.filter_by(username=username).first_or_404()
-
+    posts = Post.query.filter_by(receiver_id=user.id).order_by(Post.created_at.desc()).all()
     interests = []
 
     for interest in user.user_interests:
         interests.append(interest.interest.name)
 
-    return render_template("profile.html", user=user, current_user=current_user, interests=interests, form=form)
+    return render_template("profile.html", user=user, current_user=current_user, interests=interests, form=form, posts=posts)
 
 
 @main.route('/follow/<user_id>', methods=['POST'])
@@ -88,3 +94,22 @@ def edit_profile(username):
             flash('Account updated failed.', category='danger')
 
     return render_template('edit_profile.html', form=form, default_interests=default_interests)
+
+@main.route('/post/create/<user_id>', methods=['GET', 'POST'])
+@login_required
+def create_post(user_id):
+    form = PostForm()
+    user = User.query.get(user_id)
+    if form.validate_on_submit():
+        post = Post(
+            content=form.content.data,
+            photo=form.image.data,
+            author_id=current_user.id,
+            receiver_id=user_id
+        )
+        print(post)
+        db.session.add(post)
+        db.session.commit()
+        flash('Post created!', category='success')
+        return redirect(url_for('main.user_profile', username=user.username))
+    return render_template('create_post.html', form=form)

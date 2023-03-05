@@ -1,9 +1,37 @@
 {% extends 'base.html' %} {% block content %}
 
-<section class="h-64 w-60 bg-black">
-  <h1 class="text-3xl text-blue-600">FlaskBook</h1>
-  <p>Welcome to FlaskBook, a social media platform for developers. Sign up today!</p>
-  <a href="/register">Sign up</a>
+<section class="w-full bg-black">
+  <h2>Posts from people you follow</h2>
+
+  <div class="flex flex-col gap-y-3 max-w-xl">
+    {% for post in posts %}
+    <div class="flex flex-col bg-white rounded-lg shadow-lg">
+      <div class="flex flex-row justify-between items-center p-4">
+        <div class="flex flex-row items-center">
+          <img class="h-10 w-10 rounded-full" src="{{ post.author.avatar }}" />
+          <div class="flex flex-col ml-2">
+            <span class="text-sm text-gray-500"
+              >{{ post.author.first_name }} {{ post.author.last_name }}
+            </span>
+          </div>
+        </div>
+
+        <div class="flex flex-row items-center">
+          <span class="text-sm text-gray-500">{{ post.created_at.strftime('%B %d %y') }}</span>
+        </div>
+      </div>
+
+      <div class="p-4">
+        <p class="text-gray-800">{{ post.content }}</p>
+      </div>
+      {% if post.photo %}
+      <div class="max-w-[200px]">
+        <img src="{{ post.photo }}" class="w-full" alt="" />
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
 </section>
 
 {% endblock %}

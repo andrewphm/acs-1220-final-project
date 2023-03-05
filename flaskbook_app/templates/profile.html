@@ -38,12 +38,28 @@
     </form>
     {% endif %} {% endif %}
 
-    <form method="post" enctype="multipart/form-data">
+    <form method="POST" action="{{ url_for('main.create_post', user_id=user.id)}}">
       {{ form.hidden_tag() }}
       <div class="form-group">{{ form.content(class="w-full h-[100px]") }}</div>
       <div class="form-group">{{ form.image(class="form-control") }}</div>
       {{ form.submit(class="btn btn-primary") }}
     </form>
+
+    <div>
+      <h2>posts</h2>
+      {% for post in posts %}
+
+      <div class="border border-blue-700">
+        <p>{{ post.author.first_name}} {{ post.author.last_name }}</p>
+        <p>{{ post.content }}</p>
+        {% if post.photo %}
+        <div class="max-w-[200px]">
+          <img src="{{ post.photo }}" class="w-full" alt="" />
+        </div>
+        {% endif %}
+        <p>{{ post.created_at.strftime('%B %d, %y') }}</p>
+        {% endfor %}
+    </div>
   </section>
 </section>
 
