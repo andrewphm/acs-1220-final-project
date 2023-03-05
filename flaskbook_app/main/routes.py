@@ -18,8 +18,12 @@ def index():
 def user_profile(username):
     user = User.query.filter_by(username=username).first_or_404()
     # posts = Post.query.filter_by(user_id=user.id).all()
+    interests = []
 
-    return render_template("profile.html", user=user)
+    for interest in user.user_interests:
+        interests.append(interest.interest.name)
+
+    return render_template("profile.html", user=user, current_user=current_user, interests=interests)
 
 
 @main.route("/<username>/profile/edit")
