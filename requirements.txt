@@ -11,13 +11,17 @@ itsdangerous==1.1.0
 Jinja2==2.11.3
 lazy-object-proxy==1.5.2
 MarkupSafe==1.1.1
+podman-compose @ https://github.com/containers/podman-compose/archive/606b9d94c80f369c7fc0f7adbd35f9494982c453.tar.gz
+protobuf==4.21.12
 psycopg2==2.9.2
 pycparser==2.20
 python-dotenv==0.15.0
+PyYAML==6.0
 six==1.16.0
 SQLAlchemy==1.3.23
 SQLAlchemy-Utils==0.36.8
 toml==0.10.2
+typing_extensions==4.5.0
 Werkzeug==1.0.1
 wrapt==1.12.1
 WTForms==2.3.3
