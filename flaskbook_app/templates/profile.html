@@ -1,7 +1,9 @@
 {% extends 'base.html' %} {% block content %}
 
-<section class="h-full w-10/12 my-4 flex gap-x-7 ">
-  <section class="bg-neutral-200 min-w-[300px] flex flex-col items-center p-5 rounded-lg">
+<section class="h-full w-10/12 my-8 flex gap-x-7">
+  <section
+    class="bg-neutral-200 min-w-[300px] max-w-[325px] flex flex-col items-center p-5 rounded-lg h-fit py-9 gap-y-3 drop-shadow"
+  >
     <div class="w-[178px] rounded-full border border-neutral-400 overflow-hidden">
       {% if user.avatar %}
       <img src="{{ user.avatar }}" class="object-cover" alt="" />
@@ -18,53 +20,95 @@
       <p class="font-bold text-2xl">{{ user.first_name }} {{ user.last_name }}</p>
       {% if current_user.username != user.username %} {% if current_user.is_following(user) %}
       <form action="{{ url_for('main.unfollow', user_id=user.id) }}" method="POST">
-        <button type="submit" class="border-blue-500 rounded-lg text-blue-500 border-2 text-sm font-medium px-3 py-1">Unfollow</button>
+        <button
+          type="submit"
+          class="border-blue-500 rounded-lg text-blue-500 border-2 text-sm font-medium px-3 py-1"
+        >
+          Unfollow
+        </button>
       </form>
       {% else %}
 
       <form action="{{ url_for('main.follow', user_id=user.id) }}" method="POST">
-        <button type="submit" class="border-blue-500 rounded-lg text-blue-500 border-2 text-sm  font-medium px-3 py-1">Follow</button>
+        <button
+          type="submit"
+          class="border-blue-500 rounded-lg text-blue-500 border-2 text-sm font-medium px-3 py-1"
+        >
+          Follow
+        </button>
       </form>
-      {% endif %} {% endif %}
-
-      {% if current_user.username == user.username %}
-      <a href="{{ url_for('main.edit_profile', username=current_user.username) }}" class="border-blue-500 rounded-lg text-blue-500 border-2 text-xs font-medium px-3 py-1">Edit Profile</a>
+      {% endif %} {% endif %} {% if current_user.username == user.username %}
+      <a
+        href="{{ url_for('main.edit_profile', username=current_user.username) }}"
+        class="border-blue-500 rounded-lg text-blue-500 border-2 text-xs font-medium px-3 py-1"
+        >Edit Profile</a
+      >
       {% endif %}
     </div>
-    <div class="w-full mt-2  ">
-      <h2 class=" font-medium text-xl mb-1">Interests</h2>
+    <div class="w-full mt-2">
+      <h2 class="font-medium text-xl mb-1">Interests</h2>
       <ul class="flex flex-wrap gap-2">
         {% for interest in interests %}
-        <li class="px-2 py-1 border rounded-full text-xs text-white bg-neutral-600 border-black">{{ interest }}</li>
+        <li class="px-2 py-1 border rounded-full text-xs text-white bg-neutral-600 border-black">
+          {{ interest }}
+        </li>
         {% endfor %}
       </ul>
     </div>
   </section>
-  <section class="w-full bg-neutral-200">
 
-
-
-    <form method="POST" action="{{ url_for('main.create_post', user_id=user.id)}}">
+  <section class="w-full flex flex-col gap-y-3 max-w-[650px]">
+    <form
+      class="w-full bg-neutral-200 p-5 drop-shadow rounded-lg"
+      method="POST"
+      action="{{ url_for('main.create_post', user_id=user.id)}}"
+    >
       {{ form.hidden_tag() }}
-      <div class="form-group">{{ form.content(class="w-full h-[100px]") }}</div>
-      <div class="form-group">{{ form.image(class="form-control") }}</div>
-      {{ form.submit(class="btn btn-primary") }}
+      <div class="form-group">{{ form.content(class="w-full h-[100px] px-1") }}</div>
+      <div class="flex items-center justify-between w-full">
+        <div class="form-group">{{ form.image(size=40, class="p-1 w-full") }}</div>
+        <div class="border border-green-600 rounded-lg text-sm">
+          {{ form.submit(class="text-green-600 px-3 py-1 font-medium w-fit cursor-pointer") }}
+        </div>
+      </div>
     </form>
 
-    <div>
-      <h2>posts</h2>
-      {% for post in posts %}
+    <div class="w-full bg-neutral-200 p-5 rounded-lg drop-shadow">
+      <h2 class="text-2xl font-medium mb-2">Posts</h2>
+      <div class="flex w-full flex-col gap-y-3">
+        {% if posts|length == 0 %}
+        <p>Nothing seems to be here..</p>
 
-      <div class="border border-blue-700">
-        <p>{{ post.author.first_name}} {{ post.author.last_name }}</p>
-        <p>{{ post.content }}</p>
-        {% if post.photo %}
-        <div class="max-w-[200px]">
-          <img src="{{ post.photo }}" class="w-full" alt="" />
+        {% endif %} {% for post in posts %}
+        <div class="border bg-neutral-100 shadow p-3">
+          <div class="flex items-center gap-x-2">
+            <a href="/{{post.author.username}}">
+              <div class="w-12 h-12 rounded-full border overflow-hidden border-neutral-300">
+                <img src="{{post.author.avatar}}" class="object-fill" alt="" />
+              </div>
+            </a>
+            <div>
+              <a href="/{{post.author.username}}">
+                <p class="font-bold">{{ post.author.first_name}} {{ post.author.last_name }}</p>
+              </a>
+              <p class="font-bold text-xs">{{ post.created_at.strftime('%B %d, %y') }}</p>
+            </div>
+          </div>
+          <p class="my-1">{{ post.content }}</p>
+          {% if post.photo %}
+          <div class="max-w-[400px] mb-2">
+            <img src="{{ post.photo }}" class="w-full" alt="" />
+          </div>
+          {% endif %} {% if current_user.username == user.username %}
+          <a
+            class="mt-3 text-red-600 border border-red-600 text-xs font-medium py-1 px-3 rounded-md"
+            href="/post/delete/{{post.id}}"
+            >Delete</a
+          >
+          {% endif %}
         </div>
-        {% endif %}
-        <p>{{ post.created_at.strftime('%B %d, %y') }}</p>
         {% endfor %}
+      </div>
     </div>
   </section>
 </section>
