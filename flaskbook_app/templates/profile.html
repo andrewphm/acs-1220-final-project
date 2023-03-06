@@ -1,8 +1,8 @@
 {% extends 'base.html' %} {% block content %}
 
-<section class="h-full w-full bg-neutral-200 flex">
-  <section>
-    <div class="w-[350px] border border-blue-700">
+<section class="h-full w-10/12 my-4 flex gap-x-7 ">
+  <section class="bg-neutral-200 min-w-[300px] flex flex-col items-center p-5 rounded-lg">
+    <div class="w-[178px] rounded-full border border-neutral-400 overflow-hidden">
       {% if user.avatar %}
       <img src="{{ user.avatar }}" class="object-cover" alt="" />
       {% else %}
@@ -14,29 +14,35 @@
       {% endif %}
     </div>
 
-    <div class="w-[350px] border border-blue-700">
-      <h2>Interests</h2>
-      <ul>
+    <div class="w-full border mt-3 flex items-center justify-between">
+      <p class="font-bold text-2xl">{{ user.first_name }} {{ user.last_name }}</p>
+      {% if current_user.username != user.username %} {% if current_user.is_following(user) %}
+      <form action="{{ url_for('main.unfollow', user_id=user.id) }}" method="POST">
+        <button type="submit" class="border-blue-500 rounded-lg text-blue-500 border-2 text-sm font-medium px-3 py-1">Unfollow</button>
+      </form>
+      {% else %}
+
+      <form action="{{ url_for('main.follow', user_id=user.id) }}" method="POST">
+        <button type="submit" class="border-blue-500 rounded-lg text-blue-500 border-2 text-sm  font-medium px-3 py-1">Follow</button>
+      </form>
+      {% endif %} {% endif %}
+
+      {% if current_user.username == user.username %}
+      <a href="{{ url_for('main.edit_profile', username=current_user.username) }}" class="border-blue-500 rounded-lg text-blue-500 border-2 text-xs font-medium px-3 py-1">Edit Profile</a>
+      {% endif %}
+    </div>
+    <div class="w-full mt-2  ">
+      <h2 class=" font-medium text-xl mb-1">Interests</h2>
+      <ul class="flex flex-wrap gap-2">
         {% for interest in interests %}
-        <li>{{ interest }}</li>
+        <li class="px-2 py-1 border rounded-full text-xs text-white bg-neutral-600 border-black">{{ interest }}</li>
         {% endfor %}
       </ul>
     </div>
   </section>
-  <section class="w-full">
-    <h2>Wall</h2>
-    <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+  <section class="w-full bg-neutral-200">
 
-    {% if current_user.username != user.username %} {% if current_user.is_following(user) %}
-    <form action="{{ url_for('main.unfollow', user_id=user.id) }}" method="POST">
-      <button type="submit" class="btn btn-primary">Unfollow</button>
-    </form>
-    {% else %}
 
-    <form action="{{ url_for('main.follow', user_id=user.id) }}" method="POST">
-      <button type="submit" class="btn btn-primary">Follow</button>
-    </form>
-    {% endif %} {% endif %}
 
     <form method="POST" action="{{ url_for('main.create_post', user_id=user.id)}}">
       {{ form.hidden_tag() }}
