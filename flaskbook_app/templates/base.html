@@ -9,12 +9,25 @@
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body class="min-w-screen min-h-screen">
-    <header class="w-full h-10 bg-neutral-200 flex items-center px-10 justify-between">
-      <a href="/">FlaskBook</a>
+    <header
+      class="w-full h-14 bg-neutral-200 flex items-center px-14 justify-between border-b border-b-neutral-400 drop-shadow-lg"
+    >
+      <a class="text-blue-700 text-xl font-bold" href="/">FlaskBook</a>
       <nav>
         <div>
-          <ul class="flex">
-            <li><a href="/logout">Log out</a></li>
+          <ul class="flex gap-x-4">
+            <li>
+              <a class="font-medium" href="/{{ current_user.username }}"
+                ><p class="hover:underline">Profile</p></a
+              >
+            </li>
+            <li class="hover:scale-[1.03] transform duration-100">
+              <a
+                class="border border-red-600 text-red-600 rounded-md px-2 py-1 font-medium"
+                href="/logout"
+                >Log out</a
+              >
+            </li>
           </ul>
         </div>
       </nav>
