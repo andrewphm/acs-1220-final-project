@@ -1,42 +1,44 @@
 {% extends 'base.html' %} {% block content %}
 
-<section class="h-64 w-60">
-  <h1>Edit Profile</h1>
+<section class="min-h-screen w-full">
+  <div class="w-[500px] mx-auto my-10 bg-neutral-200 rounded-lg p-3 shadow">
+    <h1 class="text-3xl font-bold mb-2">Edit Profile</h1>
 
-  <form method="POST">
-    {{ form.hidden_tag() }}
-    <div class="form-group">
-      {{ form.first_name.label(class="form-label") }} {{ form.first_name(class="form-control") }}
-    </div>
-    <div class="form-group">
-      {{ form.last_name.label(class="form-label") }} {{ form.last_name(class="form-control") }}
-    </div>
-    <div class="form-group">
-      {{ form.username.label(class="form-label") }} {{ form.username(class="form-control") }} {% if
-      form.username.errors %}
-      <div class="invalid-feedback">
-        {% for error in form.username.errors %}
-        <span>{{ error }}</span>
-        {% endfor %}
+    <form method="POST" class="flex flex-col gap-y-3">
+      {{ form.hidden_tag() }}
+      <div class="flex flex-col">
+        {{ form.first_name.label(class="font-bold text-lg") }} {{ form.first_name(class="w-1/2") }}
       </div>
-      {% endif %}
-    </div>
-    <div class="form-group">
-      {{ form.avatar.label(class="form-label") }} {{ form.avatar(class="form-control") }}
-    </div>
-    <div class="form-group">
-      {{ form.password.label(class="form-label") }} {{ form.password(class="form-control") }}
-    </div>
-    <div class="form-group">
-      {{ form.interests.label(class="form-control-label") }} {% for option in form.interests %}
-      <div class="form-check">
-        {{ option(class_="form-check-input", checked=option.data in default_interests) }} {{
-        option.label(class_="form-check-label") }}
+
+      <div class="flex flex-col">
+        {{ form.last_name.label(class="font-bold text-lg") }} {{ form.last_name(class="w-1/2") }}
       </div>
-      {% endfor %} {{ form.interests.errors }}
-    </div>
-    <div class="form-group">{{ form.submit(class="btn btn-primary") }}</div>
-  </form>
+      <div class="flex flex-col">
+        {{ form.username.label(class="font-bold text-lg") }} {{ form.username(class="w-1/2") }}
+      </div>
+      <div class="flex flex-col">
+        {{ form.avatar.label(class="font-bold text-lgl") }} {{ form.avatar(class="w-1/2") }}
+      </div>
+      <div class="flex flex-col">
+        {{ form.password.label(class="font-bold text-lg") }} {{ form.password(class="w-1/2") }}
+      </div>
+      <div class="flex flex-col">
+        {{ form.interests.label(class="font-bold text-lg") }}
+        <div class="flex flex-wrap gap-x-4">
+          {% for option in form.interests %}
+          <div class="">
+            {{ option(class_="form-check-input", checked=option.data in default_interests) }} {{
+            option.label(class_="form-check-label") }}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="form-group">
+        <button type="submit" class="px-3 text-lg text-green-500 font-medium">Update</button>
+        <a class="text-red-600 font-medium text-lg px-3 py-1" href="/{{user.username}}">Cancel</a>
+      </div>
+    </form>
+  </div>
 </section>
 
 {% endblock %}

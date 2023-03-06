@@ -80,7 +80,7 @@ def unfollow(user_id):
 
 @main.route("/<username>/profile/edit")
 def edit_profile(username):
-    user = User.query.filter_by(username=username).first_or_404()
+    user = current_user
     form = SignUpForm(obj=user)
 
     default_interests = []
@@ -103,7 +103,7 @@ def edit_profile(username):
         else:
             flash('Account updated failed.', category='danger')
 
-    return render_template('edit_profile.html', form=form, default_interests=default_interests)
+    return render_template('edit_profile.html', form=form, default_interests=default_interests, user=user)
 
 @main.route('/post/create/<user_id>', methods=['GET', 'POST'])
 @login_required
