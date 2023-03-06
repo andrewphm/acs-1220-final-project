@@ -4,14 +4,15 @@ from flaskbook_app.models import User, Post, Interest, UserInterest, Follow
 from flaskbook_app.auth.forms import SignUpForm
 from flaskbook_app.extensions import db, app, bcrypt
 from flaskbook_app.main.forms import PostForm
+import random
+
 
 main = Blueprint("main", __name__)
 
 @main.route("/")
 @login_required
 def index():
-    user = User.query.filter_by(username=current_user.username).first_or_404()
-    followed_users = user.followed.all()
+    user = current_user
     posts = Post.query \
         .join(Follow, Follow.followed_id == Post.author_id) \
         .filter(Follow.follower_id == user.id) \
@@ -20,17 +21,18 @@ def index():
         .all()
 
     users_with_shared_interests = []
-    shared_interests = User.query.join(User.user_interests).\
-        filter(UserInterest.interest_id.in_([i.id for i in user.user_interests])).\
-        filter(User.id != user.id).distinct().all()
+    # shared_interests = User.query.join(User.user_interests).\
+    #     filter(UserInterest.interest_id.in_([i.id for i in user.user_interests])).\
+    #     filter(User.id != current_user.id).distinct().all()
 
-    for user in shared_interests:
-        if not current_user.is_following(user):
+    # for user in shared_interests:
+    #     if not current_user.is_following(user):
+    #         users_with_shared_interests.append(user)
+    users = User.query.all()
+    for user in users:
+        if not current_user.is_following(user) and user.id != current_user.id:
             users_with_shared_interests.append(user)
 
-
-
-    print(users_with_shared_interests)
     return render_template("home.html", posts=posts, current_user=current_user, users_with_shared_interests=users_with_shared_interests)
 
 
@@ -42,10 +44,12 @@ def user_profile(username):
     posts = Post.query.filter_by(receiver_id=user.id).order_by(Post.created_at.desc()).all()
     interests = []
 
+    following = user.followed.all()
+
     for interest in user.user_interests:
         interests.append(interest.interest.name)
 
-    return render_template("profile.html", user=user, current_user=current_user, interests=interests, form=form, posts=posts)
+    return render_template("profile.html", user=user, current_user=current_user, interests=interests, form=form, posts=posts, following=following)
 
 
 @main.route('/follow/<user_id>', methods=['POST', 'GET'])

@@ -1,4 +1,4 @@
-from flaskbook_app.models import User, UserInterest, Interest, Post
+from flaskbook_app.models import User, UserInterest, Interest, Post, Follow
 from flask import Blueprint, request, render_template, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
 from flaskbook_app.auth.forms import SignUpForm, LoginForm
@@ -54,6 +54,12 @@ def signup():
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+
+
+    # User.__table__.drop(db.engine)
+    # UserInterest.__table__.drop(db.engine)
+    # Post.__table__.drop(db.engine)
+    # print(Post.query.all())
 
     # for interest in interests:
     #     new_interest = Interest(name=interest)
