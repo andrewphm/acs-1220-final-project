@@ -132,10 +132,10 @@ def create_post(user_id):
 @login_required
 def delete_post(post_id):
     post = Post.query.get(post_id)
-    if post and post.author.id == current_user.id:
+    if post:
         db.session.delete(post)
         db.session.commit()
         flash('Post deleted!', category='success')
     else:
         flash('Post delete failed.', category='danger')
-    return redirect(url_for('main.user_profile', username=post.author.username))
+    return redirect(url_for('main.user_profile', username=current_user.username))
