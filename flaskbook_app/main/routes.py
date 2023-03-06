@@ -13,14 +13,25 @@ def index():
     user = User.query.filter_by(username=current_user.username).first_or_404()
     followed_users = user.followed.all()
     posts = Post.query \
-    .join(Follow, Follow.followed_id == Post.author_id) \
-    .filter(Follow.follower_id == user.id) \
-    .filter(Post.receiver_id == Post.author_id) \
-    .order_by(Post.created_at.desc()) \
-    .all()
+        .join(Follow, Follow.followed_id == Post.author_id) \
+        .filter(Follow.follower_id == user.id) \
+        .filter(Post.receiver_id == Post.author_id) \
+        .order_by(Post.created_at.desc()) \
+        .all()
 
-    print(posts)
-    return render_template("home.html", posts=posts, current_user=current_user)
+    users_with_shared_interests = []
+    shared_interests = User.query.join(User.user_interests).\
+        filter(UserInterest.interest_id.in_([i.id for i in user.user_interests])).\
+        filter(User.id != user.id).distinct().all()
+
+    for user in shared_interests:
+        if not current_user.is_following(user):
+            users_with_shared_interests.append(user)
+
+
+
+    print(users_with_shared_interests)
+    return render_template("home.html", posts=posts, current_user=current_user, users_with_shared_interests=users_with_shared_interests)
 
 
 @main.route("/<username>/")
@@ -37,10 +48,9 @@ def user_profile(username):
     return render_template("profile.html", user=user, current_user=current_user, interests=interests, form=form, posts=posts)
 
 
-@main.route('/follow/<user_id>', methods=['POST'])
+@main.route('/follow/<user_id>', methods=['POST', 'GET'])
 @login_required
 def follow(user_id):
-    print('firing')
     user_to_follow = User.query.get(user_id)
     if user_to_follow is None:
         flash('User not found.', category='danger')

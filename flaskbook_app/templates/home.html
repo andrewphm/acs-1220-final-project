@@ -1,36 +1,80 @@
 {% extends 'base.html' %} {% block content %}
 
-<section class="w-full bg-neutral-100">
-  <h2>Posts from people you follow</h2>
+<section class="w-10/12 flex p-8 gap-x-10 min-h-screen">
+  <div class="">
+    <h2 class="font-bold whitespace-nowrap">Friend Suggestions</h2>
 
-  <div class="flex flex-col gap-y-3 max-w-xl">
-    {% for post in posts %}
-    <div class="flex flex-col bg-white rounded-lg shadow-lg border border-neutral-200">
-      <div class="flex flex-row justify-between items-center p-4">
-        <div class="flex flex-row items-center">
-          <img class="h-10 w-10 rounded-full" src="{{ post.author.avatar }}" />
-          <div class="flex flex-col ml-2">
-            <span class="text-sm text-gray-500"
-              >{{ post.author.first_name }} {{ post.author.last_name }}
-            </span>
+    <div>
+      <ul class="flex flex-col gap-y-3 my-2">
+        {% for user in users_with_shared_interests %}
+
+        <li
+          class="flex gap-x-3 items-center bg-white shadow-lg border border-neutral-200 rounded-md py-2 px-4"
+        >
+          <div class="w-10 h-10 rounded-full overflow-hidden border border-neutral-300">
+            <img src="{{user.avatar}}" alt="" />
+          </div>
+          <div>
+            <a class="font-bold" href="/{{user.username}}">
+              <p class="leading-4 whitespace-nowrap">
+                {{ user.first_name }} {{ user.last_name }}
+              </p></a
+            >
+            <a class="font-bold" href="/follow/{{user.id}}"
+              ><p class="leading-4 text-blue-500">Follow</p></a
+            >
+          </div>
+        </li>
+
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <div class="w-full flex flex-col">
+    <h2 class="font-bold">Posts from people you follow</h2>
+
+    <div class="flex flex-col gap-y-3 max-w-xl my-2">
+      {% if posts|length == 0 %}
+      <div class="flex flex-col bg-white rounded-lg shadow-lg border border-neutral-200">
+        <div class="flex flex-row justify-between items-center p-4">
+          <div class="flex flex-row items-center">
+            <div class="flex flex-col ml-2">
+              <p>There are no posts to show.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %} {% for post in posts %}
+      <div class="flex flex-col bg-white rounded-lg shadow-lg border border-neutral-200">
+        <div class="flex flex-row justify-between items-center p-4">
+          <div class="flex flex-row items-center">
+            <a href="/{{post.author.username}}">
+              <img class="h-10 w-10 rounded-full" src="{{ post.author.avatar }}" />
+            </a>
+            <div class="flex flex-col ml-2">
+              <a href="/{{post.author.username}}"
+                >{{ post.author.first_name }} {{ post.author.last_name }}</a
+              >
+            </div>
+          </div>
+
+          <div class="flex flex-row items-center">
+            <span class="text-sm text-gray-500">{{ post.created_at.strftime('%B %d %y') }}</span>
           </div>
         </div>
 
-        <div class="flex flex-row items-center">
-          <span class="text-sm text-gray-500">{{ post.created_at.strftime('%B %d %y') }}</span>
+        <div class="px-4 pb-4">
+          <p class="text-gray-800">{{ post.content }}</p>
         </div>
+        {% if post.photo %}
+        <div class="w-full rounded-b-lg">
+          <img src="{{ post.photo }}" class="w-full rounded-b-lg" alt="" />
+        </div>
+        {% endif %}
       </div>
-
-      <div class="p-4">
-        <p class="text-gray-800">{{ post.content }}</p>
-      </div>
-      {% if post.photo %}
-      <div class="max-w-[200px]">
-        <img src="{{ post.photo }}" class="w-full" alt="" />
-      </div>
-      {% endif %}
+      {% endfor %}
     </div>
-    {% endfor %}
   </div>
 </section>
 
