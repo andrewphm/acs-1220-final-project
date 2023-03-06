@@ -42,8 +42,10 @@ def signup():
                 user_interest = UserInterest(user_id=user.id, interest_id=interest_id)
                 db.session.add(user_interest)
             db.session.commit()
-
             flash('Account Created!', category='success')
+            login_user(user, remember=True)
+            return redirect(url_for('main.index'))
+
         else:
             flash('Account creation failed.', category='danger')
 

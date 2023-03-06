@@ -6,12 +6,12 @@ from wtforms.validators import DataRequired, Length, ValidationError
 from flaskbook_app.extensions import db, bcrypt
 
 class SignUpForm(FlaskForm):
-    first_name = StringField('First name', validators=[DataRequired(),Length(min=3, max=50)])
-    last_name = StringField('Last name', validators=[DataRequired(), Length(min=1, max=50)])
+    first_name = StringField('First name', validators=[DataRequired(),Length(min=3, max=50)], render_kw={"placeholder": "First Name"})
+    last_name = StringField('Last name', validators=[DataRequired(), Length(min=1, max=50)], render_kw={"placeholder": "Last Name"})
     username = StringField('Username',
-        validators=[DataRequired(), Length(min=3, max=50)])
-    avatar = StringField('Avatar')
-    password = PasswordField('Password', validators=[DataRequired()])
+        validators=[DataRequired(), Length(min=3, max=50)], render_kw={"placeholder": "Username"})
+    avatar = StringField('Avatar', render_kw={"placeholder": "Add an avatar url"})
+    password = PasswordField('Password', validators=[DataRequired()], render_kw={"placeholder": "Password"})
     interests = SelectMultipleField('Interests', choices=[(interest.id, interest.name) for interest in Interest.query.all()], widget=widgets.ListWidget(prefix_label=False), option_widget=widgets.CheckboxInput(), coerce=int)
     submit = SubmitField('Sign Up')
 
@@ -26,8 +26,8 @@ class SignUpForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     username = StringField('User Name',
-        validators=[DataRequired(), Length(min=3, max=50)])
-    password = PasswordField('Password', validators=[DataRequired()])
+        validators=[DataRequired(), Length(min=3, max=50)], render_kw={"placeholder": "Username"})
+    password = PasswordField('Password', validators=[DataRequired()], render_kw={"placeholder": "Password"})
     submit = SubmitField('Log In')
 
     def validate_username(self, username):

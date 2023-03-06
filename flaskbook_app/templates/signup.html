@@ -18,44 +18,20 @@
       crossorigin="anonymous"
     />
     </head>
-    <body class="bg-neutral-200">
-      {% with messages = get_flashed_messages(with_categories=true) %} {% if
-        messages %} {% for category, message in messages %} {% if category ==
-        'error' %}
-        <div class="alert alert-danger alter-dismissable fade show" role="alert">
-          {{ message }}
-          <button type="button" class="close" data-dismiss="alert">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        {% else %}
-        <div class="alert alert-success alter-dismissable fade show" role="alert">
-          {{ message }}
-          <button type="button" class="close" data-dismiss="alert">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        {% endif %} {% endfor %} {% endif %} {% endwith %}
+    <body class="bg-slate-200">
       <main class="min-h-screen w-screen flex items-center justify-center">
         <section>
           <h1 class="text-blue-700 text-5xl font-bold">flaskbook</h1>
-          <p class="text-lg">Connect with people who share the same interests.</p>
+          <p class="text-lg font-medium w-10/12">Connect with people who share the same interests.</p>
         </section>
-        <section class="shadow-lg border border-neutral-500">
-          <div class="container">
-            <h1>Sign Up</h1>
-            <form method="POST">
+        <section class="shadow-lg border rounded-md border-neutral-200 bg-white p-4">
+          <div class="">
+            <h1 class="font-medium text-2xl mb-3">Sign Up</h1>
+            <form method="POST" class="max-w-[350px] flex flex-col gap-y-3">
               {{ form.hidden_tag() }}
-              <div class="form-group">
-                {{ form.first_name.label(class="form-label") }}
+
                 {{ form.first_name(class="form-control") }}
-              </div>
-              <div class="form-group">
-                {{ form.last_name.label(class="form-label") }}
                 {{ form.last_name(class="form-control") }}
-              </div>
-              <div class="form-group">
-                {{ form.username.label(class="form-label") }}
                 {{ form.username(class="form-control") }}
                 {% if form.username.errors %}
                   <div class="invalid-feedback">
@@ -64,26 +40,24 @@
                     {% endfor %}
                   </div>
                 {% endif %}
-              </div>
-              <div class="form-group">
-                {{ form.avatar.label(class="form-label") }}
+
                 {{ form.avatar(class="form-control") }}
-              </div>
-              <div class="form-group">
-                {{ form.password.label(class="form-label") }}
                 {{ form.password(class="form-control") }}
-              </div>
-              <div class="form-group">
-                {{ form.interests.label(class="form-control-label") }}
-                {% for option in form.interests %}
-                  <div class="form-check">
-                    {{ option(class_="form-check-input") }}
-                    {{ option.label(class_="form-check-label") }}
+
+                <div>
+                  {{ form.interests.label(class="font-medium") }}
+                  <div class="flex flex-wrap gap-x-3">
+                    {% for option in form.interests %}
+                      <div class="form-check">
+                        {{ option(class_="form-check-input") }}
+                        {{ option.label(class_="form-check-label") }}
+                      </div>
+                    {% endfor %}
                   </div>
-                {% endfor %}
-              </div>
-              <div class="form-group">
-                {{ form.submit(class="btn btn-primary") }}
+                </div>
+
+                {{ form.submit(class="btn btn-primary font-medium bg-[#007bff]") }}
+                <a href="/login" class="w-full py-2 bg-green-500 text-center font-medium rounded-md text-white">Login</a>
               </div>
             </form>
           </div>
