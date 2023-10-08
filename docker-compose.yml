@@ -8,7 +8,7 @@ services:
       POSTGRES_DB: flaskbookDB
 
   flasbook-app:
-    image: gramsay7/flaskbook-app:v1.0
+    image: andrewphm/flaskbook-app:v1.0
     ports:
       - "5000:5000"
     environment:

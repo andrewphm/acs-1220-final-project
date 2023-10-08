@@ -13,13 +13,13 @@ You need to have Docker installed on your machine. You can download Docker [here
 First, clone the repository to your local machine:
 
 ```bash
-git clone https://github.com/andrewphm/lyrics.git
+git clone https://github.com/andrewphm/acs-1220-final-project.git
 ```
 
 Navigate to the project directory:
 
 ```bash
-cd lyrics
+cd acs-1220-final-project
 ```
 
 ### Running the Docker Container
@@ -27,7 +27,7 @@ cd lyrics
 To run the application, execute the following command:
 
 ```bash
-docker-compose up
+docker compose up
 ```
 
 ### Accessing the Application
