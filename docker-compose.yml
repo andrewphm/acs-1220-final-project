@@ -1,0 +1,18 @@
+version: "3"
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: Admin
+      POSTGRES_PASSWORD: Admin
+      POSTGRES_DB: flaskbookDB
+
+  flasbook-app:
+    image: gramsay7/flaskbook-app:v1.0
+    ports:
+      - "5000:5000"
+    environment:
+      SECRET_KEY: password
+      DATABASE_URL: postgresql://Admin:Admin@postgres:5432/flaskbookDB
+    depends_on:
+      - postgres
